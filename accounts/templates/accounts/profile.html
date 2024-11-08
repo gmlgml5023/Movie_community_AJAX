@@ -4,11 +4,12 @@
   <h1>{{ person.username }}의 프로필 페이지</h1>
   <div>
     <div>
-      팔로잉 : {{ person.followings.all|length }} / 팔로워 : {{ person.followers.all|length }}
+      팔로잉 : <span id="followings-count">{{ person.followings.all|length }}</span>
+       / 팔로워 : <span id="followers-count">{{ person.followers.all|length }}</span> 
     </div>
     {% if request.user != person %}
       <div>
-        <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+        <form id="follow-form" action="{% url 'accounts:follow' person.pk %}" method="POST">
           {% csrf_token %}
           {% if request.user in person.followers.all %}
             <input type="submit" value="Unfollow">
