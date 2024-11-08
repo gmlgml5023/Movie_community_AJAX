@@ -5,11 +5,10 @@
 
   {% comment %} 필터 선택 {% endcomment %}
   <select id="movie-select">
-    <option value="">전체</option>
+    <option>전체</option>
     {% for genre in genres %}
       <option value="{{ genre.name }}">{{ genre.name }}</option>
     {% endfor %}
-
   </select>
   
   
@@ -21,8 +20,8 @@
   
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    document.getElementById('movie-select').addEventListener('change', function(event) {
-      const genreName = event.target.value;
+    document.querySelector('#movie-select').addEventListener('change', function(event) {
+      const genreName = event.target.value
 
       // axios로 서버에 GET 요청 보내기
       axios.get('/movies/filter-genre/', {
@@ -43,7 +42,6 @@
     // 영화 목록을 화면에 업데이트
     function upDateMovieList(movies) {
       const movieList = document.getElementById('movie-list')
-      console.log(movieList)
       movieList.innerHTML = ''  // 기존 영화 목록을 초기화
 
       // 새로운 영화 목록을 추가

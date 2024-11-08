@@ -5,6 +5,7 @@ from django.views.decorators.http import (
     require_POST,
     require_http_methods,
 )
+from django.http import JsonResponse
 from .models import Review, Comment
 from .forms import ReviewForm, CommentForm
 
@@ -68,4 +69,21 @@ def create_comment(request, review_pk):
 
 @login_required
 def like(request, review_pk):
-    pass
+    review = Review.objects.get(pk=review_pk)
+
+    # 12. 좋아요 상태 여부를 JS에 응답할 데이터 세팅
+    if request.user in review.like_users.all():
+        review.like_users.remove(request.user)
+        is_liked = False
+    else:
+        review.like_users.add(request.user)
+        is_liked = True
+
+    like_count = review.like_users.count()
+
+    # 13. 세팅한 데이터를 JSON 형식으로 응답
+    context = {
+        'is_liked': is_liked,
+        'like_count': like_count
+    }
+    return JsonResponse(context)
