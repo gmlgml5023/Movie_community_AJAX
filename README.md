@@ -1,93 +1,71 @@
-# 08-pjt
+# 
+
+## 1. 개요
+- AJAX와 JSON 데이터를 활용하는 커뮤니티 웹 서비스의 구성
+- 장르 별 영화데이터 조회가 가능한 애플리케이션 완성
+- 영화 리뷰의 좋아요가 가능한 애플리케이션 완성
+- 유저 간 팔로우가 가능한 애플리케이션 완성
+- 알고리즘을 통한 영화 추천이 가능한 애플리케이션 완성
 
 
+## 2. 요약
+- 프로젝트 이름 : mypjt
+- 앱이름
+  - movies
+  - accounts
+  - community
+- 기능
+  - 유저 팔로우 기능
+    - accounts 앱의 follow view 함수 활용
+    - 프로필 페이지 (accounts/profile.html) 활용
+    - 해당 사용자를 팔로우할 수 있는 버튼, 팔로워 수와 팔로잉 수를 표시
+    - 인증된 사용자만 다른 사용자를 팔로우할 수 있으며 사용자는 자기 자신을 팔로우할 수 없음
+    - 팔로우 버튼을 클릭하는 경우, AJAX기술을 이용하여 새로고침 없이 프로필 페이지 화면을 구성 (팔로우버튼 토글, 팔로워/팔로잉 수)
 
-## Getting started
+  - 리뷰 좋아요 기능
+    -  community 앱의 like view 함수를 활용
+    -  전체 리뷰 목록 조회 페이지(community/index.html) 활용
+    -  좋아요 버튼과 좋아요 개수를 표시
+    -  인증된 사용자만 좋아요를 진행 할 수 있음
+    -  좋아요 버튼을 클릭하는 경우, AJAX 기술을 이용하여 새로고침 없이 프로필 페이지화면을 구성 (좋아요 버튼 토글, 좋아요 수)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+  - 영화 장르 필터링
+    -  movies 앱의 filter_genre view 함수를 활용
+    -  전체 영화 목록 조회 페이지(movies/index.html) 활용
+    -  선택한 장르에 맞는 영화 데이터 목록 필터링 후 출력
+       -  장르와 영화는 제공된 fixtures 활용
+    -  페이지 첫 접속 시에는 전체 영화를 출력
+    -  사용자의 인증 여부와 관계없음
+    -  장르를 선택하는 경우, AJAX 기술을 이용하여 새로고침 없이 영화 목록 조회 페이지화면을 재구성
+ 
+ - ERD 
+  <br> ![alt text](image.png) 
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## 3. 앱 별 URL 및 view함수
+### 1) movies
+  | **URL**                   | **역할**                        | **HTTP Method** | **View 함수명**   |
+  |---------------------------|--------------------------------|-----------------|------------------|
+  | `/movies/`                | 전체 영화 목록 페이지 조회        | `GET`           | `index`          |
+  | `/movies/filter-genre/`   | 필터링된 영화 데이터 제공         | `GET`           | `filter_genre`   |
+  | `/movies/recommended/`    | 영화 추천 페이지 조회             | `GET`           | `recommended`    |
+### 2) accounts
+  | **URL**                        | **역할**                                           | **HTTP Method** | **View 함수명** |
+  |--------------------------------|----------------------------------------------------|-----------------|-----------------|
+  | `/accounts/signup/`            | 회원 생성 페이지 조회 및 단일 회원 데이터 생성        | `GET & POST`    | `signup`        |
+  | `/accounts/login/`             | 로그인 페이지 조회 및 세션 데이터 생성 및 저장        | `GET & POST`    | `login`         |
+  | `/accounts/logout/`            | 현재 사용자의 세션 데이터 삭제                       | `POST`          | `logout`        |
+  | `/accounts/profile/<username>/`| 사용자 상세 조회 페이지 (프로필 조회)                | `GET`           | `profile`       |
+  | `/accounts/<user_pk>/follow/`  | 사용자 팔로우 기능                                  | `POST`          |    |
+### 3) community
+  | **URL**                                     | **역할**                             | **HTTP Method** | **View 함수명**     |
+  |---------------------------------------------|--------------------------------------|-----------------|---------------------|
+  | `/community/`                               | 전체 리뷰 목록 페이지 조회             | `GET`           | `index`             |
+  | `/community/create/`                        | 새로운 리뷰 생성 페이지 조회 및 데이터 저장 | `GET & POST`    | `create`            |
+  | `/community/<review_pk>/`                   | 단일 리뷰 상세 페이지 조회             | `GET`           | `detail`            |
+  | `/community/<review_pk>/comments/create/`   | 단일 댓글 데이터 저장                 | `POST`          | `create_comment`    |
+  | `/community/<review_pk>/like/`              | 단일 리뷰 좋아요 기능                 | `POST`          |    |
 
-## Add your files
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://lab.ssafy.com/gmlgml5023/08-pjt.git
-git branch -M master
-git push -uf origin master
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://lab.ssafy.com/gmlgml5023/08-pjt/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## 4. 서버 실행 전 준비
+- `python manage.py migrate`
+- `python manage.py loaddata movies/movies.json`

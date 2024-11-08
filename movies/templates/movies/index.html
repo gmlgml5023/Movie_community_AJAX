@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Movies</h1>
+
+  {% comment %} 필터 선택 {% endcomment %}
+  <select id="movie-select">
+    <option value="">전체</option>
+    {% for genre in genres %}
+      <option value="{{ genre.name }}">{{ genre.name }}</option>
+    {% endfor %}
+  </select>
+  
+
+  <ul>
+  {% for movie in movies %}
+    <li>{{ movie.title }}</li>
+  {% endfor %}
+  </ul>
+
+  <script>
+    // 영화 필터링 기능 구현
+    const movieSelet
+  </script>
+
+{% endblock  %}
