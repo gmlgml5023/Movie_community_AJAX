@@ -1,12 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>CREATE</h1>
-  <form action="" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit">
-  </form>
-  <hr>
-  <a href="{% url 'community:index' %}">[back]</a>
+  <div class="container mt-5">
+    <h1 class="mb-4 text-center">Create Review</h1>
+    
+    <form action="" method="POST">
+      {% csrf_token %}
+      <div class="card shadow-lg p-4 rounded">
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="id_title" class="form-label">제목</label>
+            {{ form.title }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_movie_title" class="form-label">영화 제목</label>
+            {{ form.movie_title }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_content" class="form-label">내용</label>
+            {{ form.content }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_rank" class="form-label">평점</label>
+            {{ form.rank }}
+          </div>
+
+          <button type="submit" class="btn btn-success w-100 mt-3">리뷰 작성</button>
+        </div>
+      </div>
+    </form>
+
+    <hr>
+    <a href="{% url 'community:index' %}" class="btn btn-link">[목록으로 돌아가기]</a>
+  </div>
 {% endblock %}

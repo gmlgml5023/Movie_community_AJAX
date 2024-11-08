@@ -1,34 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Community</h1>
-  <hr>
+  <div class="container mt-5">
+    <h1>Community</h1>
+    <hr>
 
-  {% comment %} 1. 최상위 요소 작성 {% endcomment %}
-  <article class="review-container">
-    {% for review in reviews %}
-      <p>작성자 : <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a></p>
-      <p>글 번호: {{ review.pk }}</p>
-      <p>글 제목: {{ review.title }}</p>
-      <p>글 내용: {{ review.content }}</p>
-      {% comment %} 6. 좋아요 버튼의 action, method 삭제 {% endcomment %}
-      {% comment %} 9. JS에 리뷰 id를 전달하기 위한 data 속성 세팅 {% endcomment %}
-      <form data-review-id="{{ review.pk }}">
-        {% csrf_token %}
-        {% if request.user in review.like_users.all %}
-          {% comment %} 17. 각 좋아요 버튼을 구별할 수 있는 id 속성 추가 {% endcomment %}
-          <input type="submit" value="좋아요 취소" id="like-{{ review.pk }}">
-        {% else %}
-          <input type="submit" value="좋아요" id="like-{{ review.pk }}">
-        {% endif %}
-      </form>
-      <p>
-        <span id="like-{{ review.pk }}-count">{{ review.like_users.all|length }}</span>명이 이 글을 좋아합니다.
-      </p>
-      <a href="{% url 'community:detail' review.pk %}">[detail]</a>
-      <hr>
-    {% endfor %}
-  </article>
+    {% comment %} 1. 최상위 요소 작성 {% endcomment %}
+    <div class="review-container">
+      {% for review in reviews %}
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">{{ review.title }}</h5>
+            <p class="card-text">{{ review.content }}</p>
+            <p class="text-muted">작성자: <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a></p>
+            <p class="text-muted">글 번호: {{ review.pk }}</p>
+
+            <form data-review-id="{{ review.pk }}" class="d-inline">
+              {% csrf_token %}
+              {% if request.user in review.like_users.all %}
+                <button type="submit" class="btn btn-link text-danger" id="like-{{ review.pk }}">
+                  ❤️ 좋아요 취소
+                </button>
+              {% else %}
+                <button type="submit" class="btn btn-link text-primary" id="like-{{ review.pk }}">
+                  💔 좋아요
+                </button>
+              {% endif %}
+            </form>
+
+            <p class="mt-2">
+              <span id="like-{{ review.pk }}-count">{{ review.like_users.all|length }}</span>명이 이 글을 좋아합니다.
+            </p>
+
+            <a href="{% url 'community:detail' review.pk %}" class="btn btn-link">[detail]</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
@@ -39,7 +48,7 @@
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
 
     // 3. 선택한 최상위 요소에 이벤트 핸들러 부착
-    reviewContainer.addEventListener('submit', function (event){
+    reviewContainer.addEventListener('submit', function (event) {
       // 4. submit 이벤트 기본 동작 취소
       event.preventDefault()
       // 10. HTML에서 전달한 리뷰 id 받기
@@ -53,12 +62,8 @@
         headers: {'X-CSRFToken': csrftoken,},
       })
       .then((response) => {
-
         // 14. django한테 응답받은 좋아요 상태 정보 저장
-
         const isLiked = response.data.is_liked
-
-        // 좋아요 개수 세기
         const likeCount = response.data.like_count
 
         // 좋아요 개수 넣을 곳 span태그 선택
@@ -70,11 +75,14 @@
 
         // 15. 좋아요 상태 정보에 따라 버튼 변경
         if (isLiked) {
-          likeBtn.value = '좋아요 취소'
+          likeBtn.innerHTML = '❤️ 좋아요 취소'
+          likeBtn.classList.remove('text-primary')
+          likeBtn.classList.add('text-danger')
         } else {
-          likeBtn.value = '좋아요'
+          likeBtn.innerHTML = '💔 좋아요'
+          likeBtn.classList.remove('text-danger')
+          likeBtn.classList.add('text-primary')
         }
-
 
       })
       .catch((error) => {

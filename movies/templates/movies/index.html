@@ -1,56 +1,108 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Movies</h1>
-
-  {% comment %} 필터 선택 {% endcomment %}
-  <select id="movie-select">
-    <option>전체</option>
-    {% for genre in genres %}
-      <option value="{{ genre.name }}">{{ genre.name }}</option>
-    {% endfor %}
-  </select>
+<div class="container my-4">
+  <h1 class="text-center mb-4">Movies</h1>
   
+  <!-- 필터 선택 -->
+  <div class="row mb-4 justify-content-center">
+    <div class="col-md-4">
+      <select id="movie-select" class="form-select">
+        <option selected>전체</option>
+        {% for genre in genres %}
+          <option value="{{ genre.name }}">{{ genre.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
   
-  <ul id="movie-list">
+  <!-- 영화 목록 표시 -->
+  <div id="loading-spinner" class="text-center my-4 d-none">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  
+  <div class="row" id="movie-list">
     {% for movie in movies %}
-    <li>{{ movie.title }}</li>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ movie.title }}</h5>
+          </div>
+        </div>
+      </div>
     {% endfor %}
-  </ul>
-  
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-    document.querySelector('#movie-select').addEventListener('change', function(event) {
-      const genreName = event.target.value
+  </div>
+</div>
 
-      // axios로 서버에 GET 요청 보내기
-      axios.get('/movies/filter-genre/', {
-        params: {
-          genre: genreName
-        }
-      })
-      .then(function(response) {
-        // 성공적으로 데이터를 받으면
-        const movies = response.data
-        upDateMovieList(movies)
-      })
-      .catch(function(error) {
-        console.error('영화 목록을 가져오는 데 오류가 발생했습니다', error)
-      })
+<!-- Axios CDN -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- Bootstrap CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const movieSelect = document.querySelector('#movie-select');
+  const movieList = document.getElementById('movie-list');
+  const loadingSpinner = document.getElementById('loading-spinner');
+
+  // 장르 선택 변경 이벤트 리스너
+  movieSelect.addEventListener('change', function(event) {
+    const genreName = event.target.value;
+    
+    // 로딩 스피너 표시
+    loadingSpinner.classList.remove('d-none');
+    movieList.innerHTML = '';
+
+    // axios로 서버에 GET 요청 보내기
+    axios.get('/movies/filter-genre/', {
+      params: { genre: genreName }
     })
+    .then(function(response) {
+      const movies = response.data;
+      upDateMovieList(movies);
+    })
+    .catch(function(error) {
+      console.error('영화 목록을 가져오는 데 오류가 발생했습니다', error);
+    })
+    .finally(function() {
+      // 로딩 스피너 숨기기
+      loadingSpinner.classList.add('d-none');
+    });
+  });
 
-    // 영화 목록을 화면에 업데이트
-    function upDateMovieList(movies) {
-      const movieList = document.getElementById('movie-list')
-      movieList.innerHTML = ''  // 기존 영화 목록을 초기화
+  // 영화 목록 업데이트
+  function upDateMovieList(movies) {
+    movieList.innerHTML = '';  // 기존 영화 목록 초기화
 
-      // 새로운 영화 목록을 추가
-      movies.forEach(function(movie){
-        const li = document.createElement('li')
-        li.textContent = movie.title
-        movieList.appendChild(li)
-      })
+    if (movies.length === 0) {
+      movieList.innerHTML = '<p class="text-center text-muted">선택한 장르의 영화가 없습니다.</p>';
+      return;
     }
-  </script>
 
-{% endblock  %}
+    // 새로운 영화 목록 추가
+    movies.forEach(function(movie) {
+      const colDiv = document.createElement('div');
+      colDiv.className = 'col-md-4 mb-4';
+
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'card h-100 shadow-sm';
+
+      const cardBody = document.createElement('div');
+      cardBody.className = 'card-body';
+
+      const cardTitle = document.createElement('h5');
+      cardTitle.className = 'card-title';
+      cardTitle.textContent = movie.title;
+
+      cardBody.appendChild(cardTitle);
+      cardDiv.appendChild(cardBody);
+      colDiv.appendChild(cardDiv);
+
+      movieList.appendChild(colDiv);
+    });
+  }
+</script>
+
+{% endblock %}

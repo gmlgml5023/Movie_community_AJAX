@@ -1,36 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>DETAIL</h2>
-  <h3>{{ review.pk }} 번째 글</h3>
-  <hr>
-  <p>제목: {{ review.title }}</p>
-  <p>영화 제목: {{ review.movie_title }}</p>
-  <p>내용: {{ review.content }}</p>
-  <p>평점: {{ review.rank }}</p>
-  <p>작성 시각: {{ review.created_at }}</p>
-  <p>수정 시각: {{ review.updated_at }}</p>
-  <hr>
-  <h4>댓글 목록</h4>
-  {% if comments|length %}
-    <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
-  {% endif %}
-  {% for comment in comments %}
-    <div>
-      {{ comment.user }} - {{ comment.content }}
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">DETAIL</h2>
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+      <div class="card-body">
+        <h3 class="card-title">{{ review.pk }} 번째 글</h3>
+        <hr>
+        <p><strong>제목:</strong> {{ review.title }}</p>
+        <p><strong>영화 제목:</strong> {{ review.movie_title }}</p>
+        <p><strong>내용:</strong> {{ review.content }}</p>
+        <p><strong>평점:</strong> {{ review.rank }}</p>
+        <p><strong>작성 시각:</strong> {{ review.created_at }}</p>
+        <p><strong>수정 시각:</strong> {{ review.updated_at }}</p>
+      </div>
     </div>
-  {% empty %}
-    <p><b>댓글이 없어요..</b></p>
-  {% endfor %}
-  <hr>
-  {% if user.is_authenticated %}
-    <form action="{% url 'community:create_comment' review.pk %}" method="POST">
-      {% csrf_token %}
-      {{ comment_form }}
-      <input type="submit">
-    </form>
-  {% else %}
-    <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
-  {% endif %}
-  <a href="{% url 'community:index' %}">[back]</a>
-{% endblock  %}
+
+    <hr>
+
+    <h4>댓글 목록</h4>
+    {% if comments|length %}
+      <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
+      <div class="list-group mb-4">
+        {% for comment in comments %}
+          <div class="list-group-item">
+            <strong>{{ comment.user }}</strong> - {{ comment.content }}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p><b>댓글이 없어요..</b></p>
+    {% endif %}
+
+    <hr>
+
+    {% if user.is_authenticated %}
+      <h5 class="mb-3">댓글 작성</h5>
+      <form action="{% url 'community:create_comment' review.pk %}" method="POST" class="form-group">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="commentContent" class="form-label">댓글 내용</label>
+          <textarea id="commentContent" name="content" class="form-control" rows="4" placeholder="댓글을 입력하세요..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">댓글 작성</button>
+      </form>
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="btn btn-link">[댓글을 작성하려면 로그인하세요.]</a>
+    {% endif %}
+
+    <a href="{% url 'community:index' %}" class="btn btn-secondary mt-4">[뒤로가기]</a>
+  </div>
+{% endblock %}
