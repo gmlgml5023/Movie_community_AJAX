@@ -9,18 +9,50 @@
     {% for genre in genres %}
       <option value="{{ genre.name }}">{{ genre.name }}</option>
     {% endfor %}
+
   </select>
   
-
-  <ul>
-  {% for movie in movies %}
+  
+  <ul id="movie-list">
+    {% for movie in movies %}
     <li>{{ movie.title }}</li>
-  {% endfor %}
+    {% endfor %}
   </ul>
-
+  
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    // 영화 필터링 기능 구현
-    const movieSelet
+    document.getElementById('movie-select').addEventListener('change', function(event) {
+      const genreName = event.target.value;
+
+      // axios로 서버에 GET 요청 보내기
+      axios.get('/movies/filter-genre/', {
+        params: {
+          genre: genreName
+        }
+      })
+      .then(function(response) {
+        // 성공적으로 데이터를 받으면
+        const movies = response.data
+        upDateMovieList(movies)
+      })
+      .catch(function(error) {
+        console.error('영화 목록을 가져오는 데 오류가 발생했습니다', error)
+      })
+    })
+
+    // 영화 목록을 화면에 업데이트
+    function upDateMovieList(movies) {
+      const movieList = document.getElementById('movie-list')
+      console.log(movieList)
+      movieList.innerHTML = ''  // 기존 영화 목록을 초기화
+
+      // 새로운 영화 목록을 추가
+      movies.forEach(function(movie){
+        const li = document.createElement('li')
+        li.textContent = movie.title
+        movieList.appendChild(li)
+      })
+    }
   </script>
 
 {% endblock  %}
