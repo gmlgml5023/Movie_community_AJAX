@@ -69,3 +69,11 @@
 ## 4. 서버 실행 전 준비
 - `python manage.py migrate`
 - `python manage.py loaddata movies/movies.json`
+
+## 5. 문제상황
+### 1) QuerySet 직렬화 문제
+- JsonResponse에는 QuerySet을 바로 전달할 수 없다.
+- JsonResponse는 Python의 기본 자료형(딕셔너리, 리스트 등)만 JSON으로 직렬화할 수 있다.
+- list를 JSON으로 반환하려면 `safe=False` 옵션을 사용해야 함.
+- movies 조회 결과를 list로 변환하여 context로 전달
+- 다른 방법 : DRF serializers를 활용해서 직렬화 진행
